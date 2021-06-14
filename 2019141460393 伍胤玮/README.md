@@ -10,7 +10,7 @@
 
 **4.不同文件类型的收发**（html,css,js,png,jpg,json）
 
-**5.get,post的请求方法处理**
+**5.get,post等等的请求方法处理**
 
 
 
