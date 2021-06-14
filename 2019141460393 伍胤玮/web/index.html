@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>邮件系统</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+</head>
+<body>
+<script>
+    function send() {
+        var rev_mail = document.getElementById("rev_mail").value;
+        var subject = document.getElementById("subject").value;
+        var content = document.getElementById("content").value;
+        var email = rev_mail;
+        var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (!reg.test(email)) {
+            alert("邮箱格式不正确");
+            return
+        }
+        if(!subject || !content){
+            alert("主题或内容为空！");
+            return;
+        }
+          $.post("http://127.0.0.1:12345/send", {rev_mail,subject,content}, function (result) {
+            console.log(result)
+            if (result == true) {
+                $(window).attr('location','send_success.html');
+            } else {
+                alert('发送失败！')
+            }
+      })
+    }
+    function check() {
+        var a = document.getElementById("username").value;
+        var b = document.getElementById("password").value;
+        console.log(a, b);
+        var email = a;
+        var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (!reg.test(email)) {
+            alert("邮箱格式不正确");
+            return
+        }
+        $.post("http://127.0.0.1:12345/login", {username: a, password: b}, function (result) {
+            console.log(result)
+            if (result == true) {
+                alert('登录成功！')
+                $("#username_div").remove()
+                $("#password_div").remove()
+                $("#btn_div").remove()
+                $(".right-infp").append(`   <div class="right-infp-name" id="username_div">
+                    <input id="rev_mail" type="text" name="username" placeholder="请输入收件人邮箱"  required=""
+                           value="" autocomplete="off">
+                </div>
+                <div class="right-infp-name" >
+                    <input id="subject" type="text" name="name" placeholder="请输入主题" autocomplete="off">
+                </div>
+                <div class="right-infp-content">
+                    <textarea  placeholder="请输入内容" id="content" autocomplete="off"></textarea>
+                </div>
+                <div class="right-infp-btn" >
+                    <button class="btn" onclick="send()">发送</button>
+                </div>`)
+
+            } else {
+                alert('登录失败！')
+            }
+        });
+        // $.get(`http://127.0.0.1:12345/login?username=${a}&password=${b}`, function (result) {
+        //     console.log(result)
+        // });
+    }
+
+    $(document).ready(function () {
+        var whei = $(window).width()
+        $("html").css({fontSize: whei / 24});
+        $(window).resize(function () {
+            var whei = $(window).width();
+            $("html").css({fontSize: whei / 24})
+        });
+    });
+</script>
+<div class="main">
+
+    <div class="header">
+        <div class="header-center fl">
+            <div class="header-title">
+                WYW邮件系统
+            </div>
+            <div class="header-img"></div>
+        </div>
+        <div class="header-bottom fl"></div>
+
+    </div>
+
+    <div class="content">
+        <div class="content-left">
+            <!--<img src="images/d.png" alt="">-->
+        </div>
+        <div class="content-right">
+            <div class="right-infp">
+                <div class="right-infp-name" id="username_div">
+                    <input id="username" type="text" name="username" placeholder="请输入QQ邮箱账号" required=""
+                           value="" autocomplete="off">
+                </div>
+                <div class="right-infp-name" id="password_div">
+                    <input id="password" type="text" name="name" placeholder="请输入QQ授权码" autocomplete="off">
+                </div>
+                <div class="right-infp-btn" id="btn_div">
+                    <button class="btn" id="login_btn" onclick="check()">登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<style>
+    .copyrights {
+        text-indent: -9999px;
+        height: 0;
+        line-height: 0;
+        font-size: 0;
+        overflow: hidden;
+    }
+</style>
+<div class="copyrights" id="links20210126">
+    Done by wyw
+</div>
+</body>
+</html>
