@@ -40,10 +40,6 @@ pip install -r requirements.txt
 
 
 
-![image-20210614141113190](C:\Users\86133\AppData\Roaming\Typora\typora-user-images\image-20210614141113190.png)
-
-
-
 **4.登录**
 
 键入qq邮箱和授权码，可以进行登录。前端会提示是否登录成功
@@ -52,13 +48,7 @@ pip install -r requirements.txt
 
 登录成功后，可以发送邮件
 
-![image-20210614141410848](C:\Users\86133\AppData\Roaming\Typora\typora-user-images\image-20210614141410848.png)
-
-
 
 **5.发送成功后会跳转到发送成功界面**
-
-![image-20210614141449497](C:\Users\86133\AppData\Roaming\Typora\typora-user-images\image-20210614141449497.png)
-
 
 
