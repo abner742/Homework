@@ -28,7 +28,7 @@ MySQL 8.0
 在项目目录下运行
 
 ```cmd
-pip install -r requirement.txt
+pip install -r requirements.txt
 ```
 
 
