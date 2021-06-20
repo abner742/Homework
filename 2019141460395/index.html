@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>点击那个按钮</title>
+</head>
+<head>
+</head>
+<body>
+<button id="myBtn">点击一下就好了</button>
+<script>
+document.getElementById("myBtn").onclick=function(){successTouch()};
+var movex; var movey;
+var elem=document.getElementById("myBtn");
+elem.style.width = "100px";
+elem.style.height = "60px";
+function changeBtnPos(){
+    elem.style.position = "absolute";
+    w=Math.random()*window.innerWidth-elem.offsetWidth;
+    h=Math.random()*window.innerHeight-elem.offsetHeight;
+    if (w<=0) {
+        w=0;
+    }
+    if (h<=0) {
+        h=0;
+    }
+    elem.style.left = w+"px";
+    elem.style.top = h+"1px";
+
+    if(Math.random()>0.5){
+        document.getElementById("myBtn").innerHTML="点击不到吧";
+    }else{
+        document.getElementById("myBtn").innerHTML="点击呀";
+    }
+}
+document.getElementById("myBtn").onmousemove = changeBtnPos
+function whichButton(event)
+{
+    if(event.button==1)
+    {
+        document.getElementById("myBtn").onmousemove=function(){}
+    }
+}
+function successTouch()
+{
+    alert("你成功了！");
+    document.getElementById("myBtn").onmousemove = changeBtnPos
+}
+document.onmousedown=whichButton
+</script>
+</body>
+</html>
