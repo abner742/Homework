@@ -1,10 +1,7 @@
-
-
 import configparser
 import os
 import socket
 import threading
-
 
 
 def recv(sock, addr):
@@ -15,8 +12,6 @@ def recv(sock, addr):
         print(data.decode('utf-8'))
 
 
-        
-        
 def send(sock, addr):
     '''
         发送数据
@@ -31,53 +26,35 @@ def send(sock, addr):
         if string.lower() == 'EXIT'.lower():
             break
 
-            
-            
 
 def main():
 
-  
     # 通过多线程来实现多个客户端之间的通信
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    
     # 获取服务器ip和端口号
     curPath = os.path.dirname(os.path.realpath(__file__))
     cfgPath = os.path.join(curPath, "config.ini")
     conf = configparser.ConfigParser()
     conf.read(cfgPath, encoding="utf-8")
 
-    
     ip = conf.get("test1", "local_IP")
     port = int(conf.get("test1", "port1"))
 
-    
 
     server = (ip, port)
 
-    
     tr = threading.Thread(target=recv, args=(s, server), daemon=True)
-    
     ts = threading.Thread(target=send, args=(s, server))
-    
     tr.start()
-    
     ts.start()
-    
     ts.join()
-    
     s.close()
 
-    
 
 if __name__ == '__main__':
-  
     print("-----Welcome to zChat-----")
-    
-    print("输入EXIT退出")
-    
+    print("input 'EXIT' to exit")
     name = input('Please input your name:')
-    
     print('-----------------%s------------------' % name)
-    
     main()
