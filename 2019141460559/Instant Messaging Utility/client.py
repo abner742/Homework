@@ -8,6 +8,10 @@ from tkinter.scrolledtext import ScrolledText
 import os
 import sys
 import struct
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from  PIL import Image,ImageTk
 
 IP = ''
 PORT = ''
@@ -17,13 +21,22 @@ show = 1  # 用于判断是开还是关闭列表框
 users = []  # 在线用户列表
 chat = '------Group chat-------'  # 聊天对象
 
+def get_image(filename,width,height):
+	im=Image.open(filename).resize((width,height))
+	return ImageTk.PhotoImage(im)
 #登陆窗口
+
 root0 = tkinter.Tk()
-root0.geometry("240x240")
+root0.geometry("340x300")
 root0.title('登录')
 root0.resizable(0,0)
 one = tkinter.Label(root0,width=300,height=150,bg="#E6E6F2")
 one.pack()
+canvas_root=tkinter.Canvas(root0,width=340,height=300)
+im_root=get_image('11.png',200,100)
+canvas_root.create_image(200,100,image=im_root)
+canvas_root.pack()
+
 
 IP0 = tkinter.StringVar()
 IP0.set('')
@@ -99,33 +112,50 @@ listbox1.place(x=510, y=0, width=130, height=320)
 
 # 消息发送函数
 def send(*args):
-	message = entryIuput.get() + '~' + user + '~' + chat
+	message = entryIuput.get() + '~' + user + '~' + chat+'~'+'1'
 	s.send(message.encode())
 	INPUT.set('')
 
-def sendPic(*args):
+
+
+def sendtxt(*args):
 	filepath=entryIuput.get()
-	if os.path.isfile(filepath):
-		# 定义定义文件信息。128s表示文件名为128bytes长，l表示一个int或log文件类型，在此为文件大小
-		fileinfo_size = struct.calcsize('128sl')
-		# 定义文件头信息，包含文件名和文件大小
-		fhead = struct.pack('128sl', bytes(os.path.basename(filepath).encode('utf-8')), os.stat(filepath).st_size)
-		s.send(fhead)
-		fp = open(filepath, 'rb')
-		while 1:
-			data = fp.read(1024)
-			if not data:
-				print('{0} file send over...'.format(filepath))
-				break
-			s.send(data)
-			INPUT.set('')
+	with open(filepath,'r',encoding='utf-8') as fp:
+		content = fp.read();
+	print(content)
+	message= content+'~'+user + '~' + chat+'~'+'2'
+	s.send(message.encode())
+	INPUT.set('')
+
+# def sendPic(*args):
+# 	filepath=entryIuput.get()
+# 	if os.path.isfile(filepath):
+# 		# 定义定义文件信息。128s表示文件名为128bytes长，l表示一个int或log文件类型，在此为文件大小
+# 		fileinfo_size = struct.calcsize('128sl')
+# 		# 定义文件头信息，包含文件名和文件大小
+# 		fhead = struct.pack('128sl', bytes(os.path.basename(filepath).encode('utf-8')), os.stat(filepath).st_size)
+# 		s.send(fhead)
+# 		print('client filepath: {0}'.format(filepath))
+# 		fp = open(filepath, 'rb')
+# 		while 1:
+# 			data = fp.read(1024)
+# 			if not data:
+# 				print('{0} file send over...'.format(filepath))
+# 				break
+# 			s.send(data)
+
+
 # 聊天界面续
 sendButton = tkinter.Button(root1, text ="\n发\n送",anchor = 'n',command = send,font=('Helvetica', 18),bg = 'white')
 sendButton.place(x=575,y=320,width=65,height=300)
 root1.bind('<Return>', send)
 
+sendtxtButton=tkinter.Button(root1,text="\n发送\n文本\n文件",anchor= 'n',command= sendtxt,font=('Helvetica', 18),bg = 'white')
+sendtxtButton.place(x=510,y=320,width=65,height=300)
+root1.bind('<Return>',sendtxt)
+
 # sendPicButton=tkinter.Button(root1,text="\n发送\n图片",anchor= 'n',command= sendPic,font=('Helvetica', 18),bg = 'white')
-# sendPicButton.place(x=510,y=320,width=65,height=300)
+# sendPicButton.place(x=445,y=320,width=65,height=300)
 # root1.bind('<Return>',sendPic)
 
 
@@ -133,7 +163,7 @@ root1.bind('<Return>', send)
 def receive():
 	global uses
 	while True:
-		data = s.recv(1024)
+		data = s.recv(500000)
 		data = data.decode()
 		print(data)
 		try:
@@ -149,21 +179,40 @@ def receive():
 			message = data[0]
 			userName = data[1]
 			chatwith = data[2]
+			type= data[3]
+			print(type)
 			message = '\n' + message
-			if chatwith == '------Group chat-------':   # 群聊
-				if userName == user:
-					listbox.insert(tkinter.END, message)
-				else:
-					listbox.insert(tkinter.END, message)
-			elif userName == user or chatwith == user:  # 私聊
-				if userName == user:
-					listbox.tag_config('tag2', foreground='red')
-					listbox.insert(tkinter.END, message, 'tag2')
-				else:
-					listbox.tag_config('tag3', foreground='green')
-					listbox.insert(tkinter.END, message,'tag3')
+			if type=='1':
+				if chatwith == '------Group chat-------':   # 群聊
+					if userName == user:
+						listbox.insert(tkinter.END, message)
+					else:
+						listbox.insert(tkinter.END, message)
+				elif userName == user or chatwith == user:  # 私聊
+					if userName == user:
+						listbox.tag_config('tag2', foreground='red')
+						listbox.insert(tkinter.END, message, 'tag2')
+					else:
+						listbox.tag_config('tag3', foreground='green')
+						listbox.insert(tkinter.END, message,'tag3')
+				listbox.see(tkinter.END)
 
-			listbox.see(tkinter.END)
+			if type=='2':
+				if chatwith == '------Group chat-------':   # 群聊
+					if userName == user:
+						listbox.insert(tkinter.END, message)
+					else:
+						listbox.insert(tkinter.END, message)
+				elif userName == user or chatwith == user:  # 私聊
+					if userName == user:
+						listbox.tag_config('tag2', foreground='red')
+						listbox.insert(tkinter.END, message, 'tag2')
+					else:
+						listbox.tag_config('tag3', foreground='green')
+						listbox.insert(tkinter.END, message,'tag3')
+				listbox.see(tkinter.END)
+
+
 r = threading.Thread(target=receive)
 r.start()  # 开始线程接收信息
 

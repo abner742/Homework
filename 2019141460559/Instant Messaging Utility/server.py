@@ -25,7 +25,7 @@ print(items[0][1])  # list里面对象是元祖
 print(items[1][1])
 
 IP = items[0][1]
-PORT = (items[1][1])    # 端口
+PORT = int(items[1][1])    # 端口
 messages = queue.Queue()
 users = []   # 0:userName 1:connection
 lock = threading.Lock()
@@ -109,6 +109,8 @@ class ChatServer(threading.Thread):
                             users[i][1].send(data.encode())
                         except:
                             pass
+
+
     # 重写run
     def run(self):
         self.s.bind((IP,PORT))
