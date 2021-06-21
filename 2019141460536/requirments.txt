@@ -1,0 +1,27 @@
+#client.py
+from PyQt5.QtWidgets import *
+import sys
+import socket
+from threading import Thread
+
+#clientGUI.py
+from PyQt5.QtWidgets import *
+import sys
+import socket
+from threading import Thread
+
+#server.py
+import socket
+import sys
+from threading import Thread
+import time
+
+#serverGUI.py
+import os
+from settings import *
+from tkinter import *
+from tkinter import messagebox
+
+#StartServer.py
+from PyQt5 import QtCore, QtGui, QtWidgets
+
