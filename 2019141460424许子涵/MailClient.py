@@ -1,16 +1,35 @@
 # MailClient.py
 from socket import *
 import base64
+
+# 主要交互界面， 包括选择发送接收方的地址和文本内容
+print('Welcome to the Mail Client!')
 # 选择一个邮件服务
-mailServer = "smtp.163.com"
-# 选择发送方（from）和接收方（to）地址
-fromAddress = "a15152sk@163.com"
-toAddress = "1119450385@qq.com"
+print('Now please choose the mail server :\nA: smtp.qq.com\nB: smtp.163.com')
+temp = input()
+if temp == 'A':
+    mailServer = "smtp.qq.com"  # 使用QQ邮箱以及其服务
+elif temp == 'B':
+    mailServer = "smtp.163.com"  # 使用163邮箱以及其服务
+
+# 获取邮件相关信息
+print('Now please input your email address:')
+fromAddress: str = input()
+print('Now please input your authorization code')
+auth: str = input()
+print('Now please input email address of the receiver:')
+toAddress: str = input()
+print('Now please input the subject of the mail:')
+subject: str = input()
+contentType = "text/plain"
+print('Now please input the text of the mail:')
+txt: str = input()
+end = "\r\n.\r\n"
 
 # 发送方验证信息。
 # 由于邮箱输入信息会使用base64编码，因此需要进行编码
-username = str(base64.b64encode(fromAddress.encode('utf-8')),'utf-8')  # 此处为邮件客户端用户名 “a15152sk@163.com” 经过base64编码的过程
-password = "Q1JaSlRHWkFMQkhQQVhEWA=="  # 此处不是密码，而是邮箱申请SMTP服务时需要的授权码，同理需要经过base64编码
+username = str(base64.b64encode(fromAddress.encode('utf-8')), 'utf-8')
+password = str(base64.b64encode(auth.encode('utf-8')), 'utf-8')
 
 # 创建客户端套接字并建立连接
 serverPort = 25  # SMTP使用25号端口
@@ -75,14 +94,7 @@ print(recvData)
 if '354' != recvData[:3]:
     print('Command 354 no response')
 
-# 编辑邮件信息，发送数据
-subject: str = "This is a test text for the computer network project"
-contentType = "text/plain"
-
-# 邮件内容： msg + endMsg
-txt = "\r\n When you see these words, it means that the program is running successfully! Congratulations"
-end = "\r\n.\r\n"
-
+# 处理邮件信息
 message = 'from:' + fromAddress + '\r\n' \
           + 'to:' + toAddress + '\r\n' \
           + 'subject:' + subject + '\r\n' \
@@ -102,4 +114,3 @@ if '250' != recvEnd[:3]:
 clientSocket.sendall('QUIT\r\n'.encode())
 
 clientSocket.close()
-
