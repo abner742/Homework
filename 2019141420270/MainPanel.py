@@ -30,7 +30,7 @@ class MainPanel:
         main_frame.geometry(gm_str)
         # 设置最小尺寸
         main_frame.minsize(width, height)
-        Label(main_frame, text="welcome：" + self.username+"          输入 #!(你想要私聊的人)!# 加上消息内容就可以私聊哦 注意半角符号", font=("黑体", 13), bg="#f2f2f2",
+        Label(main_frame, text="welcome：" + self.username+"          输入 #!你想要私聊的人!# 加上消息内容就可以私聊哦 注意半角符号", font=("黑体", 13), bg="#f2f2f2",
               fg="#003366").grid(row=0, column=0, ipady=10, padx=10, columnspan=2, sticky=W)
         
         friend_list_var = StringVar()
