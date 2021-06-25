@@ -1,46 +1,102 @@
-import smtplib
-from email.header import Header
+import tkinter
+import time
 from email.mime.text import MIMEText
+import smtplib
+from tkinter import messagebox
 
-# 第三方 SMTP 服务
-mail_host = "smtp.163.com"  # SMTP服务器
-mail_user = "naocanwang"  # 用户名
-mail_pass = "DWCKGLHHYQOFICDQ"  # 授权密码
+class EmailSend:
+    def __init__(self):
+        # 进行gui部分的窗口搭建实现可视化操作
+        # 窗口创建
+        window = tkinter.Tk()
+        # 大小设定
+        window.geometry("500x400")
+        # 窗口缩放禁止
+        window.resizable(width=False, height=False)
+        # 定义title
+        window.title("邮件发送")
+        # 主题定义标签
+        label = tkinter.Label(window, text="邮件主题")
+        # 把文本放入窗口
+        label.pack()
+        # 文本框 主题
+        self.title = tkinter.Entry(window, width=50)
+        self.title.pack()
 
-sender ='naocanwang@163.com'   # 发件人邮箱
-receivers = '736547619@qq.com'  # 接收邮件
+        # 定义内容标签
+        label = tkinter.Label(window, text="邮件内容")
+        # 把文本放入窗口
+        label.pack()
+        # 文本框 内容
+        self.con = tkinter.Entry(window, width=50)
+        self.con.pack()
 
-content = 'test'
-title = '测试'  # 邮件主题
+        # 定义内容标签
+        label = tkinter.Label(window, text="发件人账号")
+        # 把文本放入窗口
+        label.pack()
+        # 文本框 账号
+        self.user = tkinter.Entry(window, width=50)
+        self.user.pack()
 
+        # 定义内容标签
+        label = tkinter.Label(window, text="授权码（密码）")
+        # 把文本放入窗口
+        label.pack()
+        # 文本框 授权码
+        self.pwd = tkinter.Entry(window, width=50)
+        self.pwd.pack()
 
-def sendEmail():
-    message = MIMEText(content, 'plain', 'utf-8')  # 内容, 格式, 编码
-    message['From'] = "{}".format(sender)
-    message['To'] = ",".join(receivers)
-    message['Subject'] = title
+        # 定义内容标签
+        label = tkinter.Label(window, text="收件人")
+        # 把文本放入窗口
+        label.pack()
+        # 文本框 收件人
+        self.to = tkinter.Entry(window, width=50)
+        self.to.pack()
 
-    try:
-        smtpObj = smtplib.SMTP_SSL(mail_host, 465)  # 启用SSL发信, 端口是465
-        smtpObj.login(mail_user, mail_pass)  # 登录验证
-        smtpObj.sendmail(sender, receivers, message.as_string())  # 发送
-        print("mail has been send successfully.")
-    except smtplib.SMTPException as e:
-        print(e)
+        # 发送按钮
+        button = tkinter.Button(window, text="点击发送", command=self.send)
+        button.pack(side="top", pady=20, ipady=10, ipadx=20)
+        timetxt = time.strftime('%Y-%m-%d-%H:%M')
+        label_time = tkinter.Label(window, text="发送时间：【%s】" % timetxt)
+        label_time.pack()
+        # 显示
+        window.mainloop()
+        pass
 
-
-def send_email2(SMTP_host, from_account, from_passwd, to_account, subject, content):
-    email_client = smtplib.SMTP(SMTP_host)
-    email_client.login(from_account, from_passwd)
-    # create msg
-    msg = MIMEText(content, 'plain', 'utf-8')
-    msg['Subject'] = Header(subject, 'utf-8')  # subject
-    msg['From'] = from_account
-    msg['To'] = to_account
-    email_client.sendmail(from_account, to_account, msg.as_string())
-
-    email_client.quit()
-
+    def send(self):
+        # 当触发发送按钮的时候来调用
+        # SMTP 邮件发送方法
+        # 邮件发送所需：邮件主题，邮件内容，邮件发件人账号，授权码，收件人
+        # 服务
+        server = "smtp.163.com"
+        # 账号
+        user = self.user.get()
+        # 授权码
+        pwd = self.pwd.get()
+        # 内容
+        content = self.con.get()
+        # 内容先去转成邮件形式
+        content = MIMEText(content)
+        # 发件人
+        content["From"] = user
+        # 收件人
+        to = self.to.get()
+        # 标题
+        content["subject"] = self.title.get()
+        # 定义邮件对象
+        email_obj = smtplib.SMTP_SSL(server, 465)
+        # 登录
+        email_obj.login(user=user, password=pwd)
+        # 发送
+        email_obj.sendmail(user, to, content.as_string())
+        # 断开连接
+        email_obj.quit()
+        # 弹框提示发送成功
+        messagebox.showinfo("发送成功", "发送成功")
+        pass
 
 if __name__ == '__main__':
-    sendEmail()
+    wind = EmailSend()
+    pass
