@@ -87,14 +87,18 @@ class EmailSend:
         content["subject"] = self.title.get()
         # 定义邮件对象
         email_obj = smtplib.SMTP_SSL(server, 465)
-        # 登录
-        email_obj.login(user=user, password=pwd)
-        # 发送
-        email_obj.sendmail(user, to, content.as_string())
+        try:
+            # 登录
+            email_obj.login(user=user, password=pwd)
+            # 发送
+            email_obj.sendmail(user, to, content.as_string())
+            # 弹框提示发送成功
+            messagebox.showinfo("发送成功", "发送成功")
+        except:
+            # 弹框提示发送成功
+            messagebox.showinfo("发送失败", "请检查邮箱和授权码是否正确")
         # 断开连接
         email_obj.quit()
-        # 弹框提示发送成功
-        messagebox.showinfo("发送成功", "发送成功")
         pass
 
 if __name__ == '__main__':
