@@ -40,12 +40,18 @@ int main()
     sprintf_s(filepath, "%s\\ID_and_AuthorizationCode.ini", app);
     char buf_1[1024] = { '\0' };
     char buf_2[1024] = { '\0' };
+    char buf_3[1024] = { '\0' };
+    char buf_4[1024] = { '\0' };
     GetPrivateProfileStringA("info", "ID", "TestData", buf_1, sizeof(buf_1), filepath);
     GetPrivateProfileStringA("info", "AuthorizationCode", "TestData", buf_2, sizeof(buf_2), filepath);
-    buf_1[strlen(buf_1)] = '\r';
-    buf_1[strlen(buf_1)] = '\n';
-    buf_2[strlen(buf_2)] = '\r';
-    buf_2[strlen(buf_2)] = '\n';
+    GetPrivateProfileStringA("info", "ID_2", "TestData", buf_3, sizeof(buf_3), filepath);
+    GetPrivateProfileStringA("info", "AuthorizationCode_2", "TestData", buf_4, sizeof(buf_4), filepath);
+    string buf_1_1 = buf_1;
+    string buf_2_1 = buf_2;
+    string buf_3_1 = buf_3;
+    string buf_4_1 = buf_4;
+
+
 
     char buff[10000]; //收到recv函数返回的结果
     string message;
@@ -100,13 +106,13 @@ int main()
         /*
         由于使用EHLO，需要发送base64加密的用户名、密码
         */
-        message = buf_1;//base64加密的用户名
+        message = buf_1_1 + "\r\n";//base64加密的用户名
         send(sockClient, message.c_str(), message.length(), 0);
         buff[recv(sockClient, buff, 10000, 0)] = '\0';
         // cout <<"3" <<  buff << endl;
 
 
-        message = buf_2;//base64加密的密码
+        message = buf_2_1 + "\r\n";//base64加密的密码
         send(sockClient, message.c_str(), message.length(), 0);
         int datasize_1 = recv(sockClient, buff, 10000, 0);
         if (datasize_1 >= 0 && datasize_1 < 10000) {
@@ -126,7 +132,8 @@ int main()
             RCPT命令的作用是：先弄清接收方系统是否已经准备好接受邮件的准备，然后才发送邮件
             这样做是为了避免浪费通信资源，不至于发送了很长的邮件之后才知道是因地址错误
             */
-            message = "MAIL FROM:<w13096399062@163.com> \r\nRCPT TO:<";
+
+            message = "MAIL FROM:<" + buf_3_1 + "@163.com> \r\nRCPT TO:<";
             message.append(mail);
             message.append("> \r\n");
             send(sockClient, message.c_str(), message.length(), 0);
@@ -140,7 +147,7 @@ int main()
             send(sockClient, message.c_str(), message.length(), 0);
             buff[recv(sockClient, buff, 10000, 0)] = '\0';
             // cout <<"6" <<  buff << endl;
-            message = "From: w13096399062@163.com\r\nTo: " + mail + "\r\nsubject:";
+            message = "From: " + buf_3_1 + "@163.com\r\nTo: " + mail + "\r\nsubject:";
             cout << "主题：";
             cin >> subject;
             message.append(subject);
@@ -185,12 +192,12 @@ int main()
         //recv()函数返回其实际copy的只接受，如果recv在copy时出错，那么它返回SOCKET_ERROR；如果recv在等待协议接收数据时网络中断了，那么它返回0
         buff[recv(sockClient, buff, 10000, 0)] = '\0';
         //cout <<"1" <<  buff << endl;
-        message = "user w13096399062@163.com\r\n";
+        message = "user " + buf_3_1 + "@163.com\r\n";
         send(sockClient, message.c_str(), message.length(), 0); //发送账号
         buff[recv(sockClient, buff, 10000, 0)] = '\0';   //接收返回值
         //std::cout << "Client : send name \nServer:"<< buff << std::endl;
 
-        message = "pass DYXWIMHVPBFPMBKW\r\n";//授权码
+        message = "pass " + buf_4_1 + "\r\n";//授权码
         send(sockClient, message.c_str(), message.length(), 0); //发送授权码
         buff[recv(sockClient, buff, 10000, 0)] = '\0';   //接收返回值
         //std::cout << "Client : send authoriza code\nServer:"<< buff << std::endl;
