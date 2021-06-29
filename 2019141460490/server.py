@@ -37,7 +37,7 @@ class ChatServer(threading.Thread):
             info = info.decode()
             # 处理注册
             if(info[0:3]=='reg'):
-                with open('test/usrs_info.pickle', 'rb') as usr_file:
+                with open('usrs_info.pickle', 'rb') as usr_file:
                     usrs_info = pickle.load(usr_file)
                     usr_file.close()
                     _,usr_name,usr_pwd = info.split('~')
@@ -46,7 +46,7 @@ class ChatServer(threading.Thread):
                         conn.send('用户已经注册'.encode())
                     else:
                         usrs_info.setdefault(usr_name,usr_pwd)
-                        with open('test/usrs_info.pickle', 'wb') as usr_file:
+                        with open('usrs_info.pickle', 'wb') as usr_file:
                             pickle.dump(usrs_info,usr_file)
                             usr_file.close()
                         conn.send('注册成功！'.encode())
