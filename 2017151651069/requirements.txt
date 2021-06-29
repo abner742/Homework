@@ -1,0 +1,24 @@
+1.运行环境：Ubuntu16.04+Linux
+2.Linux部署Python3.6，注意不要删除Linux自带的Python2.7和3.5，否则无法正常运行
+3.部署方法如下：
+3.1登录官网找到Python3.6的下载地址[https://www.python.org/downloads/release/python-362/]
+3.2右键复制下载地址[https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tar.xz]
+3.3打开terminal，按如下下载并安装：
+# yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel  [安装依赖]
+# yum -y install sqlite-devel readline-devel tk-devel gdbm-devel     [安装依赖]
+# yum -y install db4-devel libpcap-devel xz-devel                    [安装依赖]
+# yum -y install gcc gcc-c++
+# cd /root/
+# wget https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tar.xz [下载]
+# tar xf Python-3.6.2.tar.xz [解压]
+# cd Python-3.6.2
+# ./configure --prefix=/usr/local/python3.6
+# make
+# make install
+3.4调整优先级
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 100
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 150
+3.5测试配置是否成功：
+直接在terminal键入python，看版本是否为3.6.2
