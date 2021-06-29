@@ -8,7 +8,8 @@ import config
 
 Server_IP = config.Server_IP
 PORT = int(config.Server_Port)
-
+print(Server_IP)
+print(PORT)
 # Server_IP = '127.0.0.1'
 # PORT = 9999
 
@@ -35,9 +36,10 @@ class ChatServer(threading.Thread):
         while(ack!='1'):
             info = conn.recv(1024)        #接收用户登陆请求
             info = info.decode()
+            print(info)
             # 处理注册
             if(info[0:3]=='reg'):
-                with open('test/usrs_info.pickle', 'rb') as usr_file:
+                with open('usrs_info.pickle', 'rb') as usr_file:
                     usrs_info = pickle.load(usr_file)
                     usr_file.close()
                     _,usr_name,usr_pwd = info.split('~')
@@ -46,7 +48,7 @@ class ChatServer(threading.Thread):
                         conn.send('用户已经注册'.encode())
                     else:
                         usrs_info.setdefault(usr_name,usr_pwd)
-                        with open('test/usrs_info.pickle', 'wb') as usr_file:
+                        with open('usrs_info.pickle', 'wb') as usr_file:
                             pickle.dump(usrs_info,usr_file)
                             usr_file.close()
                         conn.send('注册成功！'.encode())
@@ -55,10 +57,10 @@ class ChatServer(threading.Thread):
             print(usr_pwd+usr_name)
             print(addr)
             try:
-                with open('test/usrs_info.pickle', 'rb') as usr_file:
+                with open('usrs_info.pickle', 'rb') as usr_file:
                     usrs_info = pickle.load(usr_file)
             except FileNotFoundError:
-                with open('test/usrs_info.pickle', 'wb') as usr_file:
+                with open('usrs_info.pickle', 'wb') as usr_file:
                     # 没有文件创建管理员
                     usrs_info = {'admin': 'admin'}
                     pickle.dump(usrs_info, usr_file)
