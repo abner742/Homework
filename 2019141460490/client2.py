@@ -1,3 +1,4 @@
+
 import json
 import pickle
 import socket
@@ -6,8 +7,6 @@ import tkinter as tk
 import tkinter.messagebox
 from tkinter.scrolledtext import ScrolledText
 import config
-
-
 
 target_IP = config.target_IP
 port  = config.PORT
