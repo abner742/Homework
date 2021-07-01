@@ -1,0 +1,6 @@
+1.开发环境
+Python 3.6
+2.主要使用的模块：
+socket, sys, os, threading
+3.开发工具
+Microsoft Visual Studio Code
