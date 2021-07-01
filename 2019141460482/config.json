@@ -1,0 +1,18 @@
+{
+"self_configs" :
+    {
+      "peer_id" : "flood_query",
+      "peer_ip" : "127.0.0.1",
+      "peer_data_port" : 20000,
+      "peer_command_port" : 20001
+    },
+  "neighbor_configs":
+  [
+    {
+      "peer_ip" : "127.0.0.1",
+      "peer_data_port" : 20000,
+      "peer_command_port" : 20001
+    }
+  ],
+"share_path": "share"
+}
