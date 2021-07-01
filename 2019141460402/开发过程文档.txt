@@ -1,0 +1,74 @@
+1.测试结果
+    输入正确的访问url可正确显示主页面信息。
+    输入错误的访问url会显示 the file is not found.
+2.发现的问题、以及解决问题的具体办法
+    1.测试多线程
+    刚开始的时候，连接建立返回信息后，该连接便会关闭。之后改为：
+    while True:
+        client_socket,client_address=server_socket.accept()
+        
+        #测试多线程
+        print("[%s,%s]用户连接上" % client_address)
+        
+        handle_client_process=Process(target=handle_client,args=(client_socket,))
+        handle_client_process.start()
+        client_socket.close()
+    将其放在循环中便可。可在控制台看到不同线程的建立。
+        [127.0.0.1,62246]用户连接上 
+        [127.0.0.1,58053]用户连接上
+    2.刚开始的想法只是想实现用户在浏览器请求，然后服务器通过字符串将信息返回给浏览器。
+    在了解HTML和HTTP响应和请求文件后，便想实现，浏览器申请一个文件，我们将拿到的响应请求，
+    通过字符串的处理，得到服务器请求的文件名，通过对默认路径和文件名的拼接得到路径名。具体步骤如下：
+        1.分析拿到的请求报文，代码如下
+            #获取客户端请求数据
+            request_data=client_socket.recv(1024)
+            print(request_data)    
+        控制台打印出的信息如下
+            b'GET /index.html HTTP/1.1\r\nHost: 127.0.0.1:8000\r\nConnection: keep-alive\r\nCache-Control: max-age=0\r\nsec-ch-ua: " Not;A Brand";v="99", "Microsoft Edge";v="91", "Chromium";v="91"\r\nsec-ch-ua-mobile: ?0\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36 Edg/91.0.864.59\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\nSec-Fetch-Site: none\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-User: ?1\r\nSec-Fetch-Dest: document\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6\r\n\r\n'
+        通过对功能的分析，我们只需要第一行，代码如下
+            request_lines=request_data.splitlines()
+            for line in request_lines:
+            print(line)
+        控制台打印出的信息如下
+            b'GET /index.html HTTP/1.1'
+            b'Host: 127.0.0.1:8000'
+            b'Connection: keep-alive'
+            b'Cache-Control: max-age=0'
+            b'sec-ch-ua: " Not;A Brand";v="99", "Microsoft Edge";v="91", "Chromium";v="91"'
+            b'sec-ch-ua-mobile: ?0'
+            b'Upgrade-Insecure-Requests: 1'
+            b'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36 Edg/91.0.864.59'
+            b'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+            b'Sec-Fetch-Site: none'
+            b'Sec-Fetch-Mode: navigate'
+            b'Sec-Fetch-User: ?1'
+            b'Sec-Fetch-Dest: document'
+            b'Accept-Encoding: gzip, deflate, br'
+            b'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
+            b''
+        接下来只需要对拿到的第一行进行字符处理，代码如下：
+            #解析请求报文
+            request_start_line=request_lines[0]
+            print("********",bytes.decode(request_start_line))
+            #提取用户请求的文件名
+            request_start_line=bytes.decode(request_start_line)
+            file_name=re.match(r"\w+ +(/[^ ]*) ",request_start_line).group(1)
+            print(file_name)
+        打印文件名，判断是否正确。控制台信息如下：
+            /index.html
+        之后便是正常的字符串拼接，文件操作。
+    3.第二步在控制台上运行的很正常，但是当浏览器发出请求时，控制台报错了。
+    经检查，发现是因为拿到的响应请求信息为二进制文档，而match函数只能处理字符串，
+    将其转换为字符串即可。
+    转换方式代码如下：
+         print("********",bytes.decode(request_start_line))
+    控制台信息如下：
+        ******** GET /index.html HTTP/1.1
+    成功
+    4.最后，是一个细节上的小问题。因为我发现当我访问127.0.0.1/8000，也会显示找不到文件，
+    但是实际中应该显示主页的信息。
+    改进方式，只需要将其默认路径改为index.html即可代码如下：
+        if "/"== file_name:
+        file_name= "/index.html"
+    经检验，成功。
+    
