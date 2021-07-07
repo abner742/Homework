@@ -1,0 +1,45 @@
+absl-py==0.12.0
+astor==0.8.1
+cached-property==1.5.2
+certifi==2020.12.5
+chardet==4.0.0
+cycler==0.10.0
+docopt==0.6.2
+gast==0.4.0
+grpcio==1.37.0
+h5py==3.1.0
+idna==2.10
+importlib-metadata==4.0.1
+Keras==2.1.5
+Keras-Applications==1.0.8
+Keras-Preprocessing==1.1.2
+kiwisolver @ file:///C:/ci/kiwisolver_1612282446297/work
+Markdown==3.3.4
+matplotlib @ file:///C:/ci/matplotlib-base_1603357981283/work
+mkl-fft==1.2.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+mock==4.0.3
+numpy==1.17.4
+olefile==0.46
+Pillow @ file:///C:/ci/pillow_1617386325740/work
+pipreqs==0.4.10
+protobuf==3.15.8
+pyparsing @ file:///home/linux1/recipes/ci/pyparsing_1610983426697/work
+python-dateutil @ file:///home/ktietz/src/ci/python-dateutil_1611928101742/work
+PyYAML==5.4.1
+requests==2.25.1
+scipy==1.5.4
+six @ file:///C:/ci/six_1605187303045/work
+tensorboard==1.13.1
+tensorflow-estimator==1.13.0
+tensorflow-gpu==1.13.2
+termcolor==1.1.0
+tornado @ file:///C:/ci/tornado_1606942379977/work
+tqdm @ file:///tmp/build/80754af9/tqdm_1615925068909/work
+typing-extensions==3.7.4.3
+urllib3==1.26.5
+Werkzeug==1.0.1
+wincertstore==0.2
+yarg==0.1.9
+zipp==3.4.1
